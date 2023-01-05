@@ -207,7 +207,7 @@ kubectl get po -A
 <details><summary>show</summary>
 <p>
 
-ちなみにこの--port=80はcontainerPort: 80に反映される項目ですが、この設定は利用するポートを明示するためのもので、指定があってもなくても挙動にはあまり影響しません。
+ちなみにこの--port=80はcontainerPort: 80に反映される項目ですが、この設定は利用するポートを明示するためのもので、指定があってもなくても挙動には影響しません。
 
 ```bash
 kubectl run nginx --image=nginx --restart=Never --port=80
