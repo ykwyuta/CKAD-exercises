@@ -168,6 +168,20 @@ hardの反対はsoftですが、ResourceQuotaにはsoftの制限は定義でき�
 kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml
 ```
 
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  creationTimestamp: null
+  name: myrq
+spec:
+  hard:
+    cpu: "1"
+    memory: 1G
+    pods: "2"
+status: {}
+```
+
 </p>
 </details>
 
@@ -188,10 +202,12 @@ kubectl get po -A
 </p>
 </details>
 
-### Create a pod with image nginx called nginx and expose traffic on port 80
+### nginxイメージのポート80を使うPod作成する
 
 <details><summary>show</summary>
 <p>
+
+ちなみにこの--port=80はcontainerPort: 80に反映される項目ですが、この設定は利用するポートを明示するためのもので、指定があってもなくても挙動にはあまり影響しません。
 
 ```bash
 kubectl run nginx --image=nginx --restart=Never --port=80
