@@ -94,16 +94,13 @@ kubectl logs busybox
 </p>
 </details>
 
-### Create a busybox pod (using YAML) that runs the command "env". Run it and see the output
+### YAMLで busybox の podを作り、 そこでenvコマンドの実行結果を確認する
 
 <details><summary>show</summary>
 <p>
 
 ```bash
-# create a  YAML template with this command
 kubectl run busybox --image=busybox --restart=Never --dry-run=client -o yaml --command -- env > envpod.yaml
-# see it
-cat envpod.yaml
 ```
 
 ```YAML
@@ -126,8 +123,9 @@ spec:
 status: {}
 ```
 
+YAMLからPodを作成してログを確認します。
+
 ```bash
-# apply it and then see the logs
 kubectl apply -f envpod.yaml
 kubectl logs busybox
 ```
@@ -135,7 +133,7 @@ kubectl logs busybox
 </p>
 </details>
 
-### Get the YAML for a new namespace called 'myns' without creating it
+### mynsというnamespaceを作らずにYAMLだけを作成する
 
 <details><summary>show</summary>
 <p>
@@ -144,13 +142,27 @@ kubectl logs busybox
 kubectl create namespace myns -o yaml --dry-run=client
 ```
 
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: myns
+spec: {}
+status: {}
+```
+
 </p>
 </details>
 
-### Get the YAML for a new ResourceQuota called 'myrq' with hard limits of 1 CPU, 1G memory and 2 pods without creating it
+### myrqという1 CPU、1G memory、2 podsのResourceQuota のYAMLだけを作成する
 
 <details><summary>show</summary>
 <p>
+
+hardの反対はsoftですが、ResourceQuotaにはsoftの制限は定義できません。制限を超えると即座に適用されます。
+
+単純にcpuと定義した場合はrequests.cpuと同じ意味になります。
 
 ```bash
 kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml
@@ -159,7 +171,7 @@ kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml
 </p>
 </details>
 
-### Get pods on all namespaces
+### すべての namespaceのPodの一覧を取得する
 
 <details><summary>show</summary>
 <p>
@@ -167,7 +179,8 @@ kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml
 ```bash
 kubectl get po --all-namespaces
 ```
-Alternatively 
+
+以下のようにしても同じ結果になります。
 
 ```bash
 kubectl get po -A
