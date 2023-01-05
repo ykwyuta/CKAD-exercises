@@ -73,16 +73,21 @@ kubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml | kubec
 </p>
 </details>
 
-### Create a busybox pod (using kubectl command) that runs the command "env". Run it and see the output
+### kubectlでbusyboxのPodを作り、そこでenvコマンドの実行結果を確認する
 
 <details><summary>show</summary>
 <p>
 
+アウトプットを表示したらそのままPodを削除する場合
+
 ```bash
-kubectl run busybox --image=busybox --command --restart=Never -it --rm -- env # -it will help in seeing the output, --rm will immediately delete the pod after it exits
-# or, just run it without -it
+kubectl run busybox --image=busybox --command --restart=Never -it --rm -- env
+```
+
+コマンドを実行したあと、ログを確認する場合
+
+```bash
 kubectl run busybox --image=busybox --command --restart=Never -- env
-# and then, check its logs
 kubectl logs busybox
 ```
 
