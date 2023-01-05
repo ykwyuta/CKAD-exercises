@@ -11,7 +11,7 @@ kubernetes.io > Documentation > Tasks > Access Applications in a Cluster > [Acce
 
 kubernetes.io > Documentation > Tasks > Access Applications in a Cluster > [Use Port Forwarding to Access Applications in a Cluster](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)
 
-### Create a namespace called 'mynamespace' and a pod with image nginx called nginx on this namespace
+### 'mynamespace'というnamespaceと、nginxのイメージのPodをmynamespaceに作る
 
 <details><summary>show</summary>
 <p>
@@ -24,12 +24,12 @@ kubectl run nginx --image=nginx --restart=Never -n mynamespace
 </p>
 </details>
 
-### Create the pod that was just described using YAML
+### PodのYAMLファイルを作る
 
 <details><summary>show</summary>
 <p>
 
-Easily generate YAML with:
+--dry-run=clientを指定すると、Kubernetesにリソースは作られません。-o yamlでYAMLを出力します。
 
 ```bash
 kubectl run nginx --image=nginx --restart=Never --dry-run=client -n mynamespace -o yaml > pod.yaml
@@ -51,19 +51,20 @@ metadata:
 spec:
   containers:
   - image: nginx
-    imagePullPolicy: IfNotPresent
     name: nginx
     resources: {}
   dnsPolicy: ClusterFirst
-  restartPolicy: Never
+  restartPolicy: Always
 status: {}
 ```
+
+kubectl create -fでYAMLを元にリソースを作ります。
 
 ```bash
 kubectl create -f pod.yaml
 ```
 
-Alternatively, you can run in one line
+一行で上記の内容をやる場合は以下のようになります。
 
 ```bash
 kubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml | kubectl create -n mynamespace -f -
