@@ -257,36 +257,40 @@ kubectl get po nginx -o jsonpath='{.spec.containers[].image}'
 </p>
 </details>
 
-### Get nginx pod's ip created in previous step, use a temp busybox image to wget its '/'
+### Nginx Podを作成してそのIPを確認し、一時的に作成した busybox イメージ から wget でアクセスする
 
 <details><summary>show</summary>
 <p>
 
+Nginx Podを作成してそのIPを確認します
+
 ```bash
-kubectl get po -o wide # get the IP, will be something like '10.1.1.131'
-# create a temp busybox pod
-kubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- 10.1.1.131:80
+kubectl run nginx --image=nginx --restart=Never --port=80
+kubectl get po -o wide
 ```
 
-Alternatively you can also try a more advanced option:
+```
+NAME    READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+nginx   1/1     Running   0          26s   10.42.0.18   k3sarm   <none>           <none>
+```
+
+一時的に作成した busybox イメージ から wget でアクセスします
 
 ```bash
-# Get IP of the nginx pod
+kubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- 10.42.0.18
+```
+
+以下の方法でも同じことができます
+
+```bash
 NGINX_IP=$(kubectl get pod nginx -o jsonpath='{.status.podIP}')
-# create a temp busybox pod
 kubectl run busybox --image=busybox --env="NGINX_IP=$NGINX_IP" --rm -it --restart=Never -- sh -c 'wget -O- $NGINX_IP:80'
 ``` 
-
-Or just in one line:
-
-```bash
-kubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- $(kubectl get pod nginx -o jsonpath='{.status.podIP}:{.spec.containers[0].ports[0].containerPort}')
-```
 
 </p>
 </details>
 
-### Get pod's YAML
+### PodのYAMLを確認する
 
 <details><summary>show</summary>
 <p>
@@ -304,7 +308,7 @@ kubectl get po nginx --output=yaml
 </p>
 </details>
 
-### Get information about the pod, including details about potential issues (e.g. pod hasn't started)
+### Podの詳細と潜在的な問題について情報を取得する
 
 <details><summary>show</summary>
 <p>
@@ -316,7 +320,7 @@ kubectl describe po nginx
 </p>
 </details>
 
-### Get pod logs
+### Podのログを確認する
 
 <details><summary>show</summary>
 <p>
@@ -328,7 +332,7 @@ kubectl logs nginx
 </p>
 </details>
 
-### If pod crashed and restarted, get logs about the previous instance
+### Podが再作成された際に、一つ前のログを確認する
 
 <details><summary>show</summary>
 <p>
@@ -342,7 +346,7 @@ kubectl logs nginx --previous
 </p>
 </details>
 
-### Execute a simple shell on the nginx pod
+### nginx podでシェルを実行する
 
 <details><summary>show</summary>
 <p>
@@ -354,7 +358,7 @@ kubectl exec -it nginx -- /bin/sh
 </p>
 </details>
 
-### Create a busybox pod that echoes 'hello world' and then exits
+### busybox pod を作って、そこでecho 'hello world'を実行する
 
 <details><summary>show</summary>
 <p>
@@ -368,7 +372,7 @@ kubectl run busybox --image=busybox -it --restart=Never -- /bin/sh -c 'echo hell
 </p>
 </details>
 
-### Do the same, but have the pod deleted automatically when it's completed
+### busybox pod を作って、そこでecho 'hello world'を実行し、終わったらPodを終了させる
 
 <details><summary>show</summary>
 <p>
@@ -381,7 +385,7 @@ kubectl get po # nowhere to be found :)
 </p>
 </details>
 
-### Create an nginx pod and set an env value as 'var1=val1'. Check the env value existence within the pod
+### nginx podを環境変数に'var1=val1'をセットしつつ作成し. Podの環境変数を確認する
 
 <details><summary>show</summary>
 <p>
